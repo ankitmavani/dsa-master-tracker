@@ -1,0 +1,27 @@
+{
+  "id": "nodejs",
+  "title": "Node.js Mastery",
+  "type": "learning",
+  "days": [
+    {
+      "day": 1,
+      "title": "JavaScript Runtime",
+      "topics": [
+        {
+          "id": 1,
+          "title": "Event Loop",
+          "description": "Understand Node execution phases",
+          "completed": false,
+          "revision": false
+        },
+        {
+          "id": 2,
+          "title": "Call Stack",
+          "description": "Execution Context",
+          "completed": true,
+          "revision": false
+        }
+      ]
+    }
+  ]
+}

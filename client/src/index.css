@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  /* Background */
+  --background: #fff8e8;
+  --foreground: #111111;
+
+  /* Surface */
+  --card: #ffffff;
+
+  /* Brand Colors */
+  --yellow: #ffd84d;
+  --green: #73f59f;
+  --pink: #ff90e8;
+  --blue: #8ed8ff;
+  --red: #ff8a8a;
+
+  /* Border */
+  --border: #111111;
+
+  /* Radius */
+  --radius: 20px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-pink: var(--pink);
+  --color-blue: var(--blue);
+  --color-red: var(--red);
+
+  --color-border: var(--border);
+
+  --radius-xl: var(--radius);
+
+  --font-sans: "Inter", sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Neo Brutalism Utilities */
+@layer utilities {
+  .neo-shadow {
+    box-shadow: 6px 6px 0 #111111;
+  }
+
+  .neo-shadow-sm {
+    box-shadow: 4px 4px 0 #111111;
+  }
+}
+
+@layer components {
+  .neo-card {
+    @apply rounded-[20px] border-[3px] border-black bg-white;
+    box-shadow: 6px 6px 0 #111111;
+  }
+
+  .neo-button {
+    @apply rounded-xl border-[3px] border-black font-bold transition-all;
+    box-shadow: 4px 4px 0 #111111;
+  }
+
+  .neo-button:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+}

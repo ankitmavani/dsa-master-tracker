@@ -1,0 +1,22 @@
+{
+  "id": "sql",
+  "title": "SQL Master",
+  "type": "problem",
+  "days": [
+    {
+      "day": 1,
+      "title": "SELECT",
+      "questions": [
+        {
+          "id": 101,
+          "title": "Recyclable and Low Fat Products",
+          "platform": "leetcode",
+          "difficulty": "Easy",
+          "url": "https://leetcode.com/problems/recyclable-and-low-fat-products/",
+          "status": "pending",
+          "randomSolvedCount": 0
+        }
+      ]
+    }
+  ]
+}

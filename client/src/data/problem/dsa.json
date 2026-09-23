@@ -1,0 +1,31 @@
+{
+  "id": "dsa",
+  "title": "DSA Master",
+  "type": "problem",
+  "days": [
+    {
+      "day": 1,
+      "title": "Arrays",
+      "questions": [
+        {
+          "id": 1,
+          "title": "Two Sum",
+          "platform": "leetcode",
+          "difficulty": "Easy",
+          "url": "https://leetcode.com/problems/two-sum/",
+          "status": "pending",
+          "randomSolvedCount": 0
+        },
+        {
+          "id": 2,
+          "title": "Best Time to Buy Stock",
+          "platform": "leetcode",
+          "difficulty": "Easy",
+          "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+          "status": "revision",
+          "randomSolvedCount": 1
+        }
+      ]
+    }
+  ]
+}
