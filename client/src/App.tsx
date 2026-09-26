@@ -3,14 +3,18 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "@/components/layout/main-layout";
 
 import DashboardPage from "@/pages/dashboard";
-import RoadmapPage from "@/pages/roadmap";
+// import RoadmapPage from "@/pages/RoadmapPage.tsx";
 
-import ProblemRoadmapPage from "@/pages/problem-roadmap";
-import ProblemDayPage from "@/pages/problem-day";
+// import ProblemRoadmapPage from "@/pages/ProblemRoadmapPage.tsx";
+import ProblemDayPage from "@/pages/ProblemDayPage.tsx";
 import RandomPage from "@/pages/random";
 
-import LearningRoadmapPage from "@/pages/learning-roadmap";
-import LearningDayPage from "@/pages/learning-day";
+// import LearningRoadmapPage from "@/pages/LearningRoadmap.tsx";
+// import LearningDayPage from "@/pages/LearningDayPage.tsx";
+import RoadmapPage from "./pages/RoadmapPage.tsx";
+import LearningRoadmapPage from "./pages/LearningRoadmap.tsx";
+import LearningDayPage from "./pages/LearningDayPage.tsx";
+import ProblemRoadmapPage from "./pages/ProblemRoadmapPage.tsx";
 
 export default function App() {
   return (

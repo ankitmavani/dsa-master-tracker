@@ -1,31 +1,44 @@
-import type { Roadmap } from "@/types/roadmaps";
+import type { RoadmapCard } from "@/types/roadmap";
 
-export const roadmaps: Roadmap[] = [
+export const roadmaps: RoadmapCard[] = [
   {
     id: "dsa",
     title: "DSA Master",
-    description: "",
-    type: "problem",
-    totalDays: 60,
+    description: "100 Days LeetCode Journey",
+    totalDays: 100,
     color: "yellow",
-    file: "dsa",
+    type: "problem",
   },
   {
     id: "sql",
     title: "SQL Master",
-    description: "",
-    type: "problem",
-    totalDays: 30,
+    description: "100 Days SQL Practice",
+    totalDays: 100,
     color: "blue",
-    file: "sql",
+    type: "problem",
   },
   {
     id: "nodejs",
-    title: "Node.js",
-    type: "learning",
-    description: "",
-    totalDays: 30,
+    title: "Node.js Mastery",
+    description: "Backend Learning Roadmap",
+    totalDays: 60,
     color: "green",
-    file: "nodejs",
+    type: "learning",
+  },
+  {
+    id: "react",
+    title: "React Mastery",
+    description: "Frontend Learning Roadmap",
+    totalDays: 45,
+    color: "pink",
+    type: "learning",
+  },
+  {
+    id: "system-design",
+    title: "System Design",
+    description: "Scalable Architecture",
+    totalDays: 60,
+    color: "green",
+    type: "learning",
   },
 ];

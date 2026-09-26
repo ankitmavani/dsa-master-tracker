@@ -1,3 +1,27 @@
 {
-  "id": "react"
+  "id": "react",
+  "title": "React Mastery",
+  "type": "learning",
+  "days": [
+    {
+      "day": 1,
+      "title": "React Basics",
+      "topics": [
+        {
+          "id": 101,
+          "title": "JSX",
+          "description": "Understand JSX syntax",
+          "completed": false,
+          "revision": false
+        },
+        {
+          "id": 102,
+          "title": "Components",
+          "description": "Functional Components",
+          "completed": false,
+          "revision": false
+        }
+      ]
+    }
+  ]
 }

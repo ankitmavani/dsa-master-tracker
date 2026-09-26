@@ -5,7 +5,7 @@
   "days": [
     {
       "day": 1,
-      "title": "SELECT",
+      "title": "Basic SELECT",
       "questions": [
         {
           "id": 101,

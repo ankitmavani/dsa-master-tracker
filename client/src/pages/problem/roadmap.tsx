@@ -3,29 +3,27 @@ import { ArrowLeft, Shuffle } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import DayCard from "@/components/layout/day-card";
-import { useRoadmap } from "@/hooks/use-roadmaps";
+import { useProblem } from "@/hooks/use-problem";
 
 export default function ProblemRoadmapPage() {
   const { roadmapId = "" } = useParams();
-
   const navigate = useNavigate();
 
   const [tab, setTab] = useState<"roadmap" | "random">("roadmap");
 
   const {
     roadmap,
-    roadmapDays,
-    roadmapQuestions,
+    completedDays,
     completedQuestions,
     revisionQuestions,
-    completedDays,
-  } = useRoadmap(roadmapId);
+    totalQuestions,
+  } = useProblem(roadmapId);
 
   if (!roadmap) {
-    return <div>Roadmap Not Found</div>;
+    return <div>Roadmap not found</div>;
   }
 
-  const progress = (completedDays / roadmap.totalDays) * 100;
+  const progress = (completedDays / roadmap.days.length) * 100;
 
   return (
     <div className="space-y-6">
@@ -39,21 +37,18 @@ export default function ProblemRoadmapPage() {
 
       <section className="neo-card bg-yellow p-6">
         <span className="rounded-lg border-[3px] border-black bg-white px-3 py-1 text-xs font-bold">
-          {roadmap.totalDays} DAYS
+          {roadmap.days.length} DAYS
         </span>
 
         <h1 className="font-heading mt-4 text-5xl font-bold">
           {roadmap.title}
         </h1>
 
-        <p className="mt-2">{roadmap.description}</p>
-
         <div className="mt-5">
           <div className="mb-2 flex justify-between text-sm font-bold">
             <span>Progress</span>
-
             <span>
-              {completedDays}/{roadmap.totalDays}
+              {completedDays}/{roadmap.days.length}
             </span>
           </div>
 
@@ -84,12 +79,12 @@ export default function ProblemRoadmapPage() {
         <div className="neo-card bg-blue p-4">
           <p className="text-xs font-semibold">Questions</p>
           <h2 className="font-heading mt-2 text-3xl font-bold">
-            {roadmapQuestions.length}
+            {totalQuestions}
           </h2>
         </div>
 
         <div className="neo-card bg-white p-4">
-          <p className="text-xs font-semibold">Completed Q.</p>
+          <p className="text-xs font-semibold">Completed</p>
           <h2 className="font-heading mt-2 text-3xl font-bold">
             {completedQuestions}
           </h2>
@@ -118,22 +113,15 @@ export default function ProblemRoadmapPage() {
 
       {tab === "roadmap" && (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {roadmapDays.map((day) => {
-            const list = roadmapQuestions.filter((q) => q.day === day.day);
-
-            const completed =
-              list.length > 0 && list.every((q) => q.status === "complete");
-
-            return (
-              <DayCard
-                key={day.day}
-                roadmapId={roadmapId}
-                day={day.day}
-                title={day.title}
-                completed={completed}
-              />
-            );
-          })}
+          {roadmap.days.map((day) => (
+            <DayCard
+              key={day.day}
+              roadmapId={roadmap.id}
+              day={day.day}
+              title={day.title}
+              completed={day.questions.every((q) => q.status === "complete")}
+            />
+          ))}
         </div>
       )}
 
@@ -142,16 +130,14 @@ export default function ProblemRoadmapPage() {
           <Shuffle size={42} className="mx-auto" />
 
           <h2 className="font-heading mt-4 text-3xl font-bold">
-            {roadmap.title} Random
+            Random Question
           </h2>
 
-          <p className="mt-2">Generate questions only from this roadmap.</p>
-
           <button
-            onClick={() => navigate(`/problem/${roadmapId}/random`)}
+            onClick={() => navigate(`/problem/${roadmap.id}/random`)}
             className="neo-button bg-yellow mt-6 px-6 py-3"
           >
-            Open Random Question
+            Open Random
           </button>
         </div>
       )}

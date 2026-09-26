@@ -1,3 +1,20 @@
 {
-  "id": "system-design"
+  "id": "system-design",
+  "title": "System Design",
+  "type": "learning",
+  "days": [
+    {
+      "day": 1,
+      "title": "Scalability Fundamentals",
+      "topics": [
+        {
+          "id": 201,
+          "title": "Horizontal vs Vertical Scaling",
+          "description": "Scaling strategies",
+          "completed": false,
+          "revision": false
+        }
+      ]
+    }
+  ]
 }

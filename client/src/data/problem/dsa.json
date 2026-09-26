@@ -9,7 +9,7 @@
       "questions": [
         {
           "id": 1,
-          "title": "Two Sum",
+          "title": "Two Sum 2",
           "platform": "leetcode",
           "difficulty": "Easy",
           "url": "https://leetcode.com/problems/two-sum/",
@@ -18,12 +18,27 @@
         },
         {
           "id": 2,
-          "title": "Best Time to Buy Stock",
+          "title": "Best Time to Buy and Sell Stock",
           "platform": "leetcode",
           "difficulty": "Easy",
           "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
           "status": "revision",
           "randomSolvedCount": 1
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Hashing",
+      "questions": [
+        {
+          "id": 3,
+          "title": "Contains Duplicate",
+          "platform": "leetcode",
+          "difficulty": "Easy",
+          "url": "https://leetcode.com/problems/contains-duplicate/",
+          "status": "complete",
+          "randomSolvedCount": 0
         }
       ]
     }

@@ -2,10 +2,8 @@ import { useMemo, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { roadmaps } from "@/data/roadmaps";
-import { days } from "@/data/days";
-import { useQuestions } from "@/hooks/use-questions";
 import QuestionCard from "@/components/layout/question-card";
+import { useProblem } from "@/hooks/use-problem";
 
 export default function ProblemDayPage() {
   const navigate = useNavigate();
@@ -14,49 +12,28 @@ export default function ProblemDayPage() {
 
   const [tab, setTab] = useState<"all" | "complete" | "revision">("all");
 
-  const { questions, updateStatus } = useQuestions();
+  const { roadmap, updateQuestionStatus } = useProblem(roadmapId);
 
-  // Current roadmap
-  const roadmap = roadmaps.find((r) => r.id === roadmapId);
+  if (!roadmap) return <div>Not found</div>;
 
-  // Current day
-  const day = days.find(
-    (d) => d.roadmapId === roadmapId && d.day === Number(dayId),
-  );
+  const day = roadmap.days.find((d) => d.day === Number(dayId));
 
-  // All questions of current day
-  const dayQuestions = useMemo(() => {
-    return questions.filter(
-      (q) => q.roadmapId === roadmapId && q.day === Number(dayId),
-    );
-  }, [questions, roadmapId, dayId]);
+  if (!day) return <div>Day not found</div>;
 
-  // Tab filter
   const filteredQuestions = useMemo(() => {
-    if (tab === "all") return dayQuestions;
+    if (tab === "all") return day.questions;
 
-    return dayQuestions.filter((q) => q.status === tab);
-  }, [dayQuestions, tab]);
+    return day.questions.filter((q) => q.status === tab);
+  }, [day, tab]);
 
-  const completed = dayQuestions.filter((q) => q.status === "complete").length;
+  const completed = day.questions.filter((q) => q.status === "complete").length;
 
-  const revision = dayQuestions.filter((q) => q.status === "revision").length;
+  const revision = day.questions.filter((q) => q.status === "revision").length;
 
-  const progress =
-    dayQuestions.length === 0 ? 0 : (completed / dayQuestions.length) * 100;
-
-  if (!roadmap || !day) {
-    return (
-      <div className="neo-card bg-white p-10 text-center">
-        <h2 className="font-heading text-3xl font-bold">Roadmap Not Found</h2>
-      </div>
-    );
-  }
+  const progress = (completed / day.questions.length) * 100;
 
   return (
     <div className="space-y-6">
-      {/* Back */}
-
       <button
         onClick={() => navigate(`/problem/${roadmapId}`)}
         className="neo-button flex items-center gap-2 bg-white px-4 py-2"
@@ -64,8 +41,6 @@ export default function ProblemDayPage() {
         <ArrowLeft size={18} />
         Back
       </button>
-
-      {/* Hero */}
 
       <section className="neo-card bg-yellow p-6">
         <span className="rounded-lg border-[3px] border-black bg-white px-3 py-1 text-xs font-bold">
@@ -79,7 +54,7 @@ export default function ProblemDayPage() {
         <h2 className="mt-1 text-xl font-semibold">{day.title}</h2>
 
         <p className="mt-3 text-sm font-medium">
-          {completed}/{dayQuestions.length} Completed • {revision} Revision
+          {completed}/{day.questions.length} Completed • {revision} Revision
         </p>
 
         <div className="mt-5">
@@ -90,14 +65,12 @@ export default function ProblemDayPage() {
 
           <div className="h-4 rounded-full border-[3px] border-black bg-white">
             <div
-              className="h-full rounded-full bg-black transition-all duration-300"
+              className="h-full rounded-full bg-black"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
       </section>
-
-      {/* Tabs */}
 
       <div className="flex gap-3">
         {(["all", "complete", "revision"] as const).map((item) => (
@@ -113,24 +86,14 @@ export default function ProblemDayPage() {
         ))}
       </div>
 
-      {/* Questions */}
-
       <div className="space-y-4">
-        {filteredQuestions.length === 0 ? (
-          <div className="neo-card bg-white p-10 text-center">
-            <h3 className="font-heading text-2xl font-bold">No Questions</h3>
-
-            <p className="mt-2 text-sm">No questions available in this tab.</p>
-          </div>
-        ) : (
-          filteredQuestions.map((question) => (
-            <QuestionCard
-              key={question.id}
-              question={question}
-              onStatus={updateStatus}
-            />
-          ))
-        )}
+        {filteredQuestions.map((question) => (
+          <QuestionCard
+            key={question.id}
+            question={question}
+            onStatus={updateQuestionStatus}
+          />
+        ))}
       </div>
     </div>
   );

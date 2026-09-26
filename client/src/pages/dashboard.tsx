@@ -12,8 +12,7 @@ export default function DashboardPage() {
     completedQuestions,
     revisionQuestions,
     completedTopics,
-    totalQuestions,
-    totalTopics,
+    totalItems,
     roadmapProgress,
   } = useDashboard();
 
@@ -60,7 +59,7 @@ export default function DashboardPage() {
 
         <StatCard
           title="Total Items"
-          value={totalQuestions + totalTopics}
+          value={totalItems}
           color="bg-white"
           icon={<BrainCircuit size={24} />}
         />

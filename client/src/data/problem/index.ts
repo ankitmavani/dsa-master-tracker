@@ -1,9 +1,11 @@
 import dsa from "./dsa.json";
 import sql from "./sql.json";
 
-export const problemData = {
+import type { ProblemRoadmap } from "@/types/problem";
+
+export const problemData: Record<string, ProblemRoadmap> = {
   dsa,
   sql,
-} as const;
+};
 
 export type ProblemKey = keyof typeof problemData;
