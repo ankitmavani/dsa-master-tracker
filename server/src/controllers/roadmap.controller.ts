@@ -82,4 +82,31 @@ export class RoadmapController {
       message: "Roadmap deleted",
     });
   }
+
+  static async addPlaylist(req: any, res: Response) {
+    const data = await RoadmapService.addPlaylist(req.params.id, req.body);
+
+    res.json({
+      success: true,
+      data,
+    });
+  }
+
+  static async addBook(req: any, res: Response) {
+    const data = await RoadmapService.addBook(req.params.id, req.body);
+
+    res.json({
+      success: true,
+      data,
+    });
+  }
+
+  static async addNote(req: any, res: Response) {
+    const data = await RoadmapService.addNote(req.params.id, req.body);
+
+    res.json({
+      success: true,
+      data,
+    });
+  }
 }

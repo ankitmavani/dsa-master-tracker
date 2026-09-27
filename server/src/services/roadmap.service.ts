@@ -13,6 +13,12 @@ export class RoadmapService {
 
     await roadmapRef.set({
       ...data,
+
+      // New fields
+      youtubePlaylists: [],
+      books: [],
+      notes: [],
+
       createdAt: new Date(),
     });
 
@@ -44,6 +50,12 @@ export class RoadmapService {
       .set({
         ...roadmap,
         totalDays: Number(roadmap.totalDays),
+
+        // New fields
+        youtubePlaylists: [],
+        books: [],
+        notes: [],
+
         createdAt: new Date(),
       });
 
@@ -172,5 +184,91 @@ export class RoadmapService {
     await batch.commit();
 
     return true;
+  }
+
+  // ---------- YouTube ----------
+
+  static async addPlaylist(roadmapId: string, payload: any) {
+    const ref = db.collection("roadmaps").doc(roadmapId);
+
+    const doc = await ref.get();
+
+    const data = doc.data();
+
+    await ref.update({
+      youtubePlaylists: [...(data?.youtubePlaylists || []), payload],
+    });
+
+    return payload;
+  }
+
+  static async deletePlaylist(roadmapId: string, playlistId: string) {
+    const ref = db.collection("roadmaps").doc(roadmapId);
+
+    const doc = await ref.get();
+
+    const data = doc.data();
+
+    await ref.update({
+      youtubePlaylists: (data?.youtubePlaylists || []).filter(
+        (x: any) => x.id !== playlistId,
+      ),
+    });
+  }
+
+  // ---------- Books ----------
+
+  static async addBook(roadmapId: string, payload: any) {
+    const ref = db.collection("roadmaps").doc(roadmapId);
+
+    const doc = await ref.get();
+
+    const data = doc.data();
+
+    await ref.update({
+      books: [...(data?.books || []), payload],
+    });
+
+    return payload;
+  }
+
+  static async deleteBook(roadmapId: string, bookId: string) {
+    const ref = db.collection("roadmaps").doc(roadmapId);
+
+    const doc = await ref.get();
+
+    const data = doc.data();
+
+    await ref.update({
+      books: (data?.books || []).filter((x: any) => x.id !== bookId),
+    });
+  }
+
+  // ---------- Notes ----------
+
+  static async addNote(roadmapId: string, payload: any) {
+    const ref = db.collection("roadmaps").doc(roadmapId);
+
+    const doc = await ref.get();
+
+    const data = doc.data();
+
+    await ref.update({
+      notes: [...(data?.notes || []), payload],
+    });
+
+    return payload;
+  }
+
+  static async deleteNote(roadmapId: string, noteId: string) {
+    const ref = db.collection("roadmaps").doc(roadmapId);
+
+    const doc = await ref.get();
+
+    const data = doc.data();
+
+    await ref.update({
+      notes: (data?.notes || []).filter((x: any) => x.id !== noteId),
+    });
   }
 }

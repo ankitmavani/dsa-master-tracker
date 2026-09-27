@@ -15,4 +15,13 @@ export const roadmapApi = {
         "Content-Type": "multipart/form-data",
       },
     }),
+
+  addPlaylist: (id: string, payload: any) =>
+    api.post(`/roadmaps/${id}/playlists`, payload),
+
+  addBook: (id: string, payload: any) =>
+    api.post(`/roadmaps/${id}/books`, payload),
+
+  addNote: (id: string, payload: any) =>
+    api.post(`/roadmaps/${id}/notes`, payload),
 };
