@@ -57,6 +57,9 @@ export default function RoadmapPage() {
   const [creating, setCreating] = useState(false);
 
   const [form, setForm] = useState<CreateRoadmapForm>(initialForm);
+  const [createMode, setCreateMode] = useState<"manual" | "bulk">("manual");
+
+  const [excelFile, setExcelFile] = useState<File | null>(null);
 
   const roadmapList = useMemo(() => {
     console.log(roadmaps);
@@ -98,16 +101,15 @@ export default function RoadmapPage() {
 
         const res = await roadmapApi.getAll();
 
-        console.log("API Response:", res);
-
-        const roadmapData = Array.isArray(res.data) ? res.data : [];
+        // ✅ Correct
+        const roadmapData = res.data.data || [];
 
         setRoadmaps(roadmapData);
 
         setStats({
           totalRoadmaps: roadmapData.length,
           totalDays: roadmapData.reduce(
-            (sum: number, r: any) => sum + (r.totalDays || 0),
+            (sum: number, r: Roadmap) => sum + (r.totalDays || 0),
             0,
           ),
           completedDays: roadmapData.reduce(
@@ -124,7 +126,6 @@ export default function RoadmapPage() {
 
     load();
   }, []);
-
   const slugify = (text: string) =>
     text
       .toLowerCase()
@@ -137,22 +138,43 @@ export default function RoadmapPage() {
     try {
       setCreating(true);
 
-      await roadmapApi.create({
-        id: slugify(form.title),
-        title: form.title,
-        description: form.description,
-        type: form.type,
-        totalDays: Number(form.totalDays),
-        color: form.color,
-        icon: form.icon,
-      });
+      if (createMode === "manual") {
+        await roadmapApi.create({
+          id: slugify(form.title),
+          title: form.title,
+          description: form.description,
+          type: form.type,
+          totalDays: Number(form.totalDays),
+          color: form.color,
+          icon: form.icon,
+        });
+      } else {
+        if (!excelFile) {
+          alert("Please select Excel file");
+          return;
+        }
 
-      setOpenModal(false);
+        const formData = new FormData();
+
+        formData.append("id", slugify(form.title));
+        formData.append("title", form.title);
+        formData.append("description", form.description);
+        formData.append("type", form.type);
+        formData.append("totalDays", String(form.totalDays));
+        formData.append("color", form.color);
+        formData.append("icon", form.icon);
+
+        formData.append("file", excelFile);
+
+        await roadmapApi.bulkUpload(formData);
+      }
+
       setForm(initialForm);
+      setExcelFile(null);
+      setCreateMode("manual");
+      setOpenModal(false);
 
-      await fetchRoadmaps();
-    } catch (error) {
-      console.error(error);
+      fetchRoadmaps();
     } finally {
       setCreating(false);
     }
@@ -428,6 +450,63 @@ export default function RoadmapPage() {
                 />
               </div>
 
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setCreateMode("manual")}
+                  className={`neo-button py-3 ${
+                    createMode === "manual" ? "bg-black text-white" : "bg-white"
+                  }`}
+                >
+                  Manual
+                </button>
+
+                <button
+                  onClick={() => setCreateMode("bulk")}
+                  className={`neo-button py-3 ${
+                    createMode === "bulk" ? "bg-black text-white" : "bg-white"
+                  }`}
+                >
+                  Bulk Upload
+                </button>
+              </div>
+
+              {createMode === "bulk" && (
+                <div>
+                  <label className="mb-2 block text-sm font-black">
+                    Excel File
+                  </label>
+
+                  <label className="bg-blue block cursor-pointer rounded-2xl border-[3px] border-dashed border-black p-6 text-center">
+                    <input
+                      type="file"
+                      accept=".xlsx,.xls"
+                      className="hidden"
+                      onChange={(e) =>
+                        setExcelFile(e.target.files?.[0] || null)
+                      }
+                    />
+
+                    <p className="text-lg font-black">
+                      {excelFile ? "📄 " + excelFile.name : "Upload Excel"}
+                    </p>
+
+                    <p className="mt-2 text-xs font-semibold">
+                      Problem & Learning template supported
+                    </p>
+                  </label>
+
+                  {excelFile && (
+                    <div className="bg-green mt-3 rounded-xl border-[3px] border-black p-3">
+                      <p className="font-black">Selected File</p>
+                      <p className="text-sm">{excelFile.name}</p>
+                      <p className="text-xs opacity-70">
+                        {(excelFile.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Description */}
               <div>
                 <label className="mb-2 block text-sm font-black">
@@ -574,7 +653,11 @@ export default function RoadmapPage() {
                 onClick={handleCreate}
                 className="neo-button bg-black px-6 py-3 text-white disabled:opacity-50"
               >
-                {creating ? "Creating..." : "Create Roadmap"}
+                {creating
+                  ? "Processing..."
+                  : createMode === "manual"
+                    ? "Create Roadmap"
+                    : "Upload & Create"}
               </button>
             </div>
           </Dialog.Panel>

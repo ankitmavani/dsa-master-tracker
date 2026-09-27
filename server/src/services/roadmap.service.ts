@@ -1,6 +1,11 @@
 import { db } from "../config/firebase";
-import { Roadmap } from "../models/roadmap.model";
 import { Day } from "../models/day.model";
+import { Roadmap } from "../models/roadmap.model";
+
+interface BulkPayload {
+  roadmap: any;
+  rows: any[];
+}
 
 export class RoadmapService {
   static async create(data: Omit<Roadmap, "createdAt">) {
@@ -16,22 +21,114 @@ export class RoadmapService {
     for (let i = 1; i <= data.totalDays; i++) {
       const dayId = `${data.id}-day-${i}`;
 
-      const dayRef = db.collection("days").doc(dayId);
-
-      const day: Day = {
+      batch.set(db.collection("days").doc(dayId), {
         id: dayId,
         roadmapId: data.id,
         day: i,
         title: `Day ${i}`,
         createdAt: new Date(),
-      };
-
-      batch.set(dayRef, day);
+      });
     }
 
     await batch.commit();
 
     return data;
+  }
+
+  static async bulkCreate({ roadmap, rows }: BulkPayload) {
+    const roadmapId = roadmap.id;
+
+    await db
+      .collection("roadmaps")
+      .doc(roadmapId)
+      .set({
+        ...roadmap,
+        totalDays: Number(roadmap.totalDays),
+        createdAt: new Date(),
+      });
+
+    const grouped: Record<number, any[]> = {};
+
+    rows.forEach((row) => {
+      const day = Number(row.Day);
+
+      if (!grouped[day]) grouped[day] = [];
+
+      grouped[day].push(row);
+    });
+
+    const batch = db.batch();
+
+    Object.keys(grouped).forEach((key) => {
+      const day = Number(key);
+
+      const dayId = `${roadmapId}-day-${day}`;
+
+      const first = grouped[day][0];
+
+      batch.set(db.collection("days").doc(dayId), {
+        id: dayId,
+        roadmapId,
+        day,
+        title: first["Day Title"],
+        createdAt: new Date(),
+      });
+
+      grouped[day].forEach((row, index) => {
+        if (roadmap.type === "problem") {
+          const questionId = `${dayId}-q-${index + 1}`;
+
+          batch.set(db.collection("questions").doc(questionId), {
+            id: questionId,
+            roadmapId,
+            dayId,
+            day,
+            title: row["Question Title"],
+            description: row["Description"] || "",
+            leetcodeUrl: row["LeetCode URL"] || "",
+            gfgUrl: row["GFG URL"] || "",
+            difficulty: row["Difficulty"] || "Easy",
+            tags: String(row["Tags"] || "")
+              .split(",")
+              .map((t: string) => t.trim())
+              .filter(Boolean),
+            notes: row["Notes"] || "",
+            status: "pending",
+            createdAt: new Date(),
+          });
+        } else {
+          const topicId = `${dayId}-t-${index + 1}`;
+
+          batch.set(db.collection("items").doc(topicId), {
+            id: topicId,
+            roadmapId,
+            dayId,
+            day,
+            type: "learning",
+            title: row["Topic Title"],
+            description: row["Description"] || "",
+            videoUrl: row["Video URL"] || "",
+            articleUrl: row["Article URL"] || "",
+            notes: row["Notes"] || "",
+            flags: {
+              completed: false,
+              revision: false,
+              important: String(row["Important"]).toLowerCase() === "true",
+              favorite: false,
+            },
+            createdAt: new Date(),
+          });
+        }
+      });
+    });
+
+    await batch.commit();
+
+    return {
+      roadmapId,
+      days: Object.keys(grouped).length,
+      records: rows.length,
+    };
   }
 
   static async findAll() {

@@ -1,17 +1,18 @@
 import { api } from "@/lib/axios";
 
 export const roadmapApi = {
-  getAll: async () => {
-    const res = await api.get("/roadmaps");
-    return res.data; // don't use .data.data yet
-  },
+  getAll: () => api.get("/roadmaps"),
   getById: async (id: string) => {
     const { data } = await api.get(`/roadmaps/${id}`);
     return data;
   },
 
-  create: async (payload: any) => {
-    const res = await api.post("/roadmaps", payload);
-    return res.data;
-  },
+  create: (payload: any) => api.post("/roadmaps", payload),
+
+  bulkUpload: (formData: FormData) =>
+    api.post("/roadmaps/bulk-upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
 };
